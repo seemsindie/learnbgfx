@@ -31,6 +31,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(SDL2)
 
+# Fetch SDL2_image
 FetchContent_Declare(
   SDL2_image
   GIT_REPOSITORY git@github.com:libsdl-org/SDL_image.git
