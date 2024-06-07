@@ -1,5 +1,5 @@
 .cache/
 build
 3rdparty/*
-.DS_Store.vscode
 .DS_Store
+.vscode
