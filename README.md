@@ -20,7 +20,7 @@ With ninja
 mkdir build
 cd build
 cmake -G Ninja ..
-ninja # compile it
+ninja # compile it all
 ```
 
 With make
@@ -29,5 +29,14 @@ With make
 mkdir build
 cd build
 cmake ..
-make # compile it
+make # compile it all
+```
+
+You can also list targets with 
+
+```
+ninja -t targets
+
+# and build a specific target with
+ninja <target>
 ```
