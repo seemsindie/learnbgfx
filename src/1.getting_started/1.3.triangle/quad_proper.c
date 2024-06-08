@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
@@ -8,11 +9,17 @@
 #include <fs_triangle.sc.mtl.bin.h>
 #include <vs_triangle.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
+#include <fs_triangle.sc.dx11.bin.h>
+#include <vs_triangle.sc.dx11.bin.h>
 #endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <utils.h>
+
+#define BGFX_STATE_DEFAULT_NO_CULL                                      \
+  (0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | \
+   BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA)
 
 typedef struct PosColorVertex {
   float x, y, z;
@@ -58,6 +65,10 @@ void setup_buffers_and_shaders() {
   bgfx_shader_handle_t fsh = bgfx_create_shader(
       bgfx_make_ref(fs_triangle_mtl, sizeof(fs_triangle_mtl)));
 #elif BX_PLATFORM_WINDOWS
+  bgfx_shader_handle_t vsh = bgfx_create_shader(
+      bgfx_make_ref(vs_triangle_dx11, sizeof(vs_triangle_dx11)));
+  bgfx_shader_handle_t fsh = bgfx_create_shader(
+      bgfx_make_ref(fs_triangle_dx11, sizeof(fs_triangle_dx11)));
 #endif
 
   program = bgfx_create_program(vsh, fsh, true);
@@ -72,7 +83,7 @@ int main(int argc, char* argv[]) {
   bgfx_init_t init;
   bgfx_init_ctor(&init);
   SDL_Window* window = init_sdl_bgfx(width, height, &init, debug, reset);
-  SDL_SetWindowTitle(window, "Triangle Indexed");
+  SDL_SetWindowTitle(window, "Quad proper");
 
   setup_buffers_and_shaders();
 
@@ -87,12 +98,12 @@ int main(int argc, char* argv[]) {
     bgfx_set_view_rect(0, 0, 0, width, height);
     bgfx_touch(0);
 
-    bgfx_dbg_text_printf(0, 0, 0x4f, "Hello, World!");
+    bgfx_dbg_text_printf(0, 0, 0x4f, "Hello, quad!");
 
     bgfx_set_vertex_buffer(0, vbh, 0, 4);
     bgfx_set_index_buffer(ibh, 0, 6);
 
-    bgfx_set_state(BGFX_STATE_DEFAULT | BGFX_STATE_CULL_CCW, 0); // Cull counter-clockwise triangles.
+    bgfx_set_state(BGFX_STATE_DEFAULT_NO_CULL, 0); // Cull counter-clockwise triangles.
 
     bgfx_submit(0, program, 0, BGFX_DISCARD_ALL);
 

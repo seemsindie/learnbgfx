@@ -1,12 +1,21 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#include <fs_textures.sc.glsl.bin.h>
+#include <vs_textures.sc.glsl.bin.h>
+#elif BX_PLATFORM_OSX
 #include <fs_textures.sc.mtl.bin.h>
+#include <vs_textures.sc.mtl.bin.h>
+#elif BX_PLATFORM_WINDOWS
+#include <fs_textures.sc.dx11.bin.h>
+#include <vs_textures.sc.dx11.bin.h>
+#endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <utils.h>
-#include <vs_textures.sc.mtl.bin.h>
 
 typedef struct PosColorVertex {
   float x, y, z;
@@ -43,7 +52,13 @@ void setup_buffers_and_shaders() {
   const bgfx_memory_t* index_mem = bgfx_copy(s_indices, sizeof(s_indices));
   ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE);
 
-  shader_program = load_shader_embedded((uint8_t*)vs_textures_mtl, sizeof(vs_textures_mtl), (uint8_t*)fs_textures_mtl, sizeof(fs_textures_mtl));
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+  shader_program = load_shader_embedded(vs_textures_glsl, sizeof(vs_textures_glsl), fs_textures_glsl, sizeof(fs_textures_glsl));
+#elif BX_PLATFORM_OSX
+  shader_program = load_shader_embedded(vs_textures_mtl, sizeof(vs_textures_mtl), fs_textures_mtl, sizeof(fs_textures_mtl));
+#elif BX_PLATFORM_WINDOWS
+  shader_program = load_shader_embedded(vs_textures_dx11, sizeof(vs_textures_dx11), fs_textures_dx11, sizeof(fs_textures_dx11));
+#endif
 
   // Set uniforms
   u_color = bgfx_create_uniform("u_color", BGFX_UNIFORM_TYPE_VEC4, 1);

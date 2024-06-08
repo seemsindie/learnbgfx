@@ -34,7 +34,7 @@ FetchContent_MakeAvailable(SDL2)
 # Fetch SDL2_image
 FetchContent_Declare(
   SDL2_image
-  GIT_REPOSITORY git@github.com:libsdl-org/SDL_image.git
+  GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
   GIT_TAG        origin/SDL2
   SOURCE_DIR     "${FETCHCONTENT_BASE_DIR}/SDL2_image"
 )
@@ -43,7 +43,7 @@ FetchContent_MakeAvailable(SDL2_image)
 # Fetch cglm
 FetchContent_Declare(
   cglm
-  GIT_REPOSITORY git@github.com:recp/cglm.git
+  GIT_REPOSITORY https://github.com/recp/cglm.git
   GIT_TAG        origin/master
   SOURCE_DIR     "${FETCHCONTENT_BASE_DIR}/cglm"
 )

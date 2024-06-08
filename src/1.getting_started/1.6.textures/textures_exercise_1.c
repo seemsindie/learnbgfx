@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
@@ -8,6 +9,8 @@
 #include <fs_textures_exercise_1.sc.mtl.bin.h>
 #include <vs_textures_combined.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
+#include <fs_textures_exercise_1.sc.dx11.bin.h>
+#include <vs_textures_combined.sc.dx11.bin.h>
 #endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
@@ -54,6 +57,7 @@ void setup_buffers_and_shaders() {
 #elif BX_PLATFORM_OSX
   shader_program = load_shader_embedded(vs_textures_combined_mtl, sizeof(vs_textures_combined_mtl), fs_textures_exercise_1_mtl, sizeof(fs_textures_exercise_1_mtl));
 #elif BX_PLATFORM_WINDOWS
+  shader_program = load_shader_embedded(vs_textures_combined_dx11, sizeof(vs_textures_combined_dx11), fs_textures_exercise_1_dx11, sizeof(fs_textures_exercise_1_dx11));
 #endif
   // Set uniforms
   u_color = bgfx_create_uniform("u_color", BGFX_UNIFORM_TYPE_VEC4, 1);

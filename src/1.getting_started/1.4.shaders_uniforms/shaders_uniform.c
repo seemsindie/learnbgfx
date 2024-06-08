@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
@@ -6,8 +7,10 @@
 #include <vs_uniform.sc.glsl.bin.h>
 #elif BX_PLATFORM_OSX
 #include <fs_uniform.sc.mtl.bin.h>
-#include <vs_uniform.sc.sc.mtl.bin.h>
+#include <vs_uniform.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
+#include <fs_uniform.sc.dx11.bin.h>
+#include <vs_uniform.sc.dx11.bin.h>
 #endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
@@ -57,6 +60,10 @@ void setup_buffers_and_shaders() {
   bgfx_shader_handle_t fsh = bgfx_create_shader(
       bgfx_make_ref(fs_uniform_mtl, sizeof(fs_uniform_mtl)));
 #elif BX_PLATFORM_WINDOWS
+  bgfx_shader_handle_t vsh = bgfx_create_shader(
+      bgfx_make_ref(vs_uniform_dx11, sizeof(vs_uniform_dx11)));
+  bgfx_shader_handle_t fsh = bgfx_create_shader(
+      bgfx_make_ref(fs_uniform_dx11, sizeof(fs_uniform_dx11)));
 #endif
 
   program = bgfx_create_program(vsh, fsh, true);

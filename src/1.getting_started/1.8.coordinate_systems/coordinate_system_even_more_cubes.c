@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
@@ -9,6 +10,8 @@
 #include <fs_coordinate_system.sc.mtl.bin.h>
 #include <vs_coordinate_system.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
+#include <fs_coordinate_system.sc.dx11.bin.h>
+#include <vs_coordinate_system.sc.dx11.bin.h>
 #endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
@@ -106,6 +109,7 @@ void setup_buffers_and_shaders() {
 #elif BX_PLATFORM_OSX
   shader_program = load_shader_embedded(vs_coordinate_system_mtl, sizeof(vs_coordinate_system_mtl), fs_coordinate_system_mtl, sizeof(fs_coordinate_system_mtl));
 #elif BX_PLATFORM_WINDOWS
+  shader_program = load_shader_embedded(vs_coordinate_system_dx11, sizeof(vs_coordinate_system_dx11), fs_coordinate_system_dx11, sizeof(fs_coordinate_system_dx11));
 #endif
 
   // Set uniforms

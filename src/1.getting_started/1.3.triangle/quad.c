@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
@@ -8,6 +9,8 @@
 #include <fs_triangle.sc.mtl.bin.h>
 #include <vs_triangle.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
+#include <fs_triangle.sc.dx11.bin.h>
+#include <vs_triangle.sc.dx11.bin.h>
 #endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
@@ -58,6 +61,10 @@ void setup_buffers_and_shaders()
   bgfx_shader_handle_t fsh = bgfx_create_shader(
       bgfx_make_ref(fs_triangle_mtl, sizeof(fs_triangle_mtl)));
 #elif BX_PLATFORM_WINDOWS
+  bgfx_shader_handle_t vsh = bgfx_create_shader(
+      bgfx_make_ref(vs_triangle_dx11, sizeof(vs_triangle_dx11)));
+  bgfx_shader_handle_t fsh = bgfx_create_shader(
+      bgfx_make_ref(fs_triangle_dx11, sizeof(fs_triangle_dx11)));
 #endif
 
   program = bgfx_create_program(vsh, fsh, true);

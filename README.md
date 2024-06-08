@@ -12,6 +12,8 @@ cd learnopengl-sdl-bgfx
 
 ## Building the project
 
+Note: on Windows install nasm (SDL image requierment) with `winget install nasm -i`
+
 With ninja
 
 ```sh

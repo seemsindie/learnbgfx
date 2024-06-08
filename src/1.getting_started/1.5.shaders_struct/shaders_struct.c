@@ -1,3 +1,4 @@
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
@@ -8,6 +9,8 @@
 #include <fs_struct.sc.mtl.bin.h>
 #include <vs_struct.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
+#include <fs_struct.sc.dx11.bin.h>
+#include <vs_struct.sc.dx11.bin.h>
 #endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
@@ -51,6 +54,7 @@ void setup_buffers_and_shaders() {
 #elif BX_PLATFORM_OSX
   shader_program = load_shader_embedded(vs_struct_mtl, sizeof(vs_struct_mtl), fs_struct_mtl, sizeof(fs_struct_mtl));
 #elif BX_PLATFORM_WINDOWS
+  shader_program = load_shader_embedded(vs_struct_dx11, sizeof(vs_struct_dx11), fs_struct_dx11, sizeof(fs_struct_dx11));
 #endif
 
   // Set uniforms
