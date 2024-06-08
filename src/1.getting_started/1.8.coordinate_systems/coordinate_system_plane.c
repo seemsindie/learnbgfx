@@ -2,12 +2,18 @@
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
 #include <cglm/cglm.h>
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#include <fs_coordinate_system.sc.glsl.bin.h>
+#include <vs_coordinate_system.sc.glsl.bin.h>
+#elif BX_PLATFORM_OSX
 #include <fs_coordinate_system.sc.mtl.bin.h>
+#include <vs_coordinate_system.sc.mtl.bin.h>
+#elif BX_PLATFORM_WINDOWS
+#endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <utils.h>
-#include <vs_coordinate_system.sc.mtl.bin.h>
 
 #define BGFX_STATE_DEFAULT_NO_CULL                                      \
   (0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | \
@@ -50,9 +56,12 @@ void setup_buffers_and_shaders() {
   const bgfx_memory_t* index_mem = bgfx_copy(s_indices, sizeof(s_indices));
   ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE);
 
-  shader_program = load_shader_embedded(
-      (uint8_t*)vs_coordinate_system_mtl, sizeof(vs_coordinate_system_mtl),
-      (uint8_t*)fs_coordinate_system_mtl, sizeof(fs_coordinate_system_mtl));
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+  shader_program = load_shader_embedded(vs_coordinate_system_glsl, sizeof(vs_coordinate_system_glsl), fs_coordinate_system_glsl, sizeof(fs_coordinate_system_glsl));
+#elif BX_PLATFORM_OSX
+  shader_program = load_shader_embedded(vs_coordinate_system_mtl, sizeof(vs_coordinate_system_mtl), fs_coordinate_system_mtl, sizeof(fs_coordinate_system_mtl));
+#elif BX_PLATFORM_WINDOWS
+#endif
 
   // Set uniforms
   u_color = bgfx_create_uniform("u_color", BGFX_UNIFORM_TYPE_VEC4, 1);

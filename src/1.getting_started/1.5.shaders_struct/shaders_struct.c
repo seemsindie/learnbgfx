@@ -1,12 +1,18 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
-#include <fs_uniform.sc.mtl.bin.h>
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#include <fs_struct.sc.glsl.bin.h>
+#include <vs_struct.sc.glsl.bin.h>
+#elif BX_PLATFORM_OSX
+#include <fs_struct.sc.mtl.bin.h>
+#include <vs_struct.sc.mtl.bin.h>
+#elif BX_PLATFORM_WINDOWS
+#endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <utils.h>
-#include <vs_uniform.sc.mtl.bin.h>
 
 typedef struct PosColorVertex {
   float x, y, z;
@@ -40,7 +46,12 @@ void setup_buffers_and_shaders() {
   const bgfx_memory_t* index_mem = bgfx_copy(s_indices, sizeof(s_indices));
   ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE);
 
-  shader_program = load_shader_embedded(vs_uniform_mtl, sizeof(vs_uniform_mtl), fs_uniform_mtl, sizeof(fs_uniform_mtl));
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+  shader_program = load_shader_embedded(vs_struct_glsl, sizeof(vs_struct_glsl), fs_struct_glsl, sizeof(fs_struct_glsl));
+#elif BX_PLATFORM_OSX
+  shader_program = load_shader_embedded(vs_struct_mtl, sizeof(vs_struct_mtl), fs_struct_mtl, sizeof(fs_struct_mtl));
+#elif BX_PLATFORM_WINDOWS
+#endif
 
   // Set uniforms
   u_color = bgfx_create_uniform("u_color", BGFX_UNIFORM_TYPE_VEC4, 1);
@@ -87,6 +98,7 @@ int main(int argc, char* argv[]) {
   destroy_shader_program(&shader_program);
   bgfx_destroy_index_buffer(ibh);
   bgfx_destroy_vertex_buffer(vbh);
+  bgfx_destroy_uniform(u_color);
   bgfx_shutdown();
 
   SDL_DestroyWindow(window);

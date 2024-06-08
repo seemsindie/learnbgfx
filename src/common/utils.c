@@ -25,9 +25,9 @@ SDL_Window* init_sdl_bgfx(uint32_t width, uint32_t height, bgfx_init_t* init,
   }
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-  init.platformData.ndt = wmi.info.x11.display;
-  init.platformData.nwh = (void*)(uintptr_t)wmi.info.x11.window;
-  init.type = BGFX_RENDERER_TYPE_OPENGL;
+  init->platformData.ndt = wmi.info.x11.display;
+  init->platformData.nwh = (void*)(uintptr_t)wmi.info.x11.window;
+  init->type = BGFX_RENDERER_TYPE_OPENGL;
 #elif BX_PLATFORM_OSX
   // init.platformData.nwh = setup_metal_layer((void*)wmi.info.cocoa.window);
   // init.type = BGFX_RENDERER_TYPE_METAL;
@@ -35,8 +35,8 @@ SDL_Window* init_sdl_bgfx(uint32_t width, uint32_t height, bgfx_init_t* init,
   // init->type = BGFX_RENDERER_TYPE_METAL;
   init->type = BGFX_RENDERER_TYPE_METAL;
 #elif BX_PLATFORM_WINDOWS
-  init.platformData.nwh = wmi.info.win.window;
-  init.type = BGFX_RENDERER_TYPE_DIRECT3D11;
+  init->platformData.nwh = wmi.info.win.window;
+  init->type = BGFX_RENDERER_TYPE_DIRECT3D11;
 #endif
 
   init->resolution.width = width;
@@ -126,7 +126,7 @@ Shader load_shaders_bin(const char* vertex_shader_path,
 }
 
 Shader load_shader_embedded(const uint8_t* vertex_shader,
-                            const uint32_t vs_size, uint8_t* fragment_shader,
+                            const uint32_t vs_size, const uint8_t* fragment_shader,
                             const uint32_t fs_size) {
   const bgfx_memory_t* vertex_mem = bgfx_make_ref(vertex_shader, vs_size);
   const bgfx_memory_t* fragment_mem = bgfx_make_ref(fragment_shader, fs_size);
@@ -169,16 +169,47 @@ SDL_Surface* load_image(const char* filename) {
   return surface;
 }
 
+// bgfx_texture_handle_t create_texture_from_surface(SDL_Surface* surface) {
+//   if (!surface) {
+//     fprintf(stderr, "Cannot create texture from NULL surface\n");
+//     exit(1);
+//   }
+
+//   bgfx_texture_format_t format =
+//       BGFX_TEXTURE_FORMAT_BGRA8;
+//   const bgfx_memory_t* mem = bgfx_alloc(surface->pitch * surface->h);
+//   memcpy(mem->data, surface->pixels, surface->pitch * surface->h);
+
+//   bgfx_texture_handle_t handle =
+//       bgfx_create_texture_2d((uint16_t)surface->w, (uint16_t)surface->h,
+//                              false,
+//                              1, format, 0, mem);
+
+//   return handle;
+// }
+
+bgfx_texture_format_t get_texture_format(SDL_Surface* surface) {
+  switch (surface->format->BytesPerPixel) {
+    case 3:
+      return BGFX_TEXTURE_FORMAT_RGB8;
+    case 4:
+      return BGFX_TEXTURE_FORMAT_RGBA8;
+    default:
+      fprintf(stderr, "Unsupported pixel format\n");
+      exit(1);
+  }
+}
+
 bgfx_texture_handle_t create_texture_from_surface(SDL_Surface* surface) {
   if (!surface) {
     fprintf(stderr, "Cannot create texture from NULL surface\n");
     exit(1);
   }
 
-  bgfx_texture_format_t format =
-      BGFX_TEXTURE_FORMAT_BGRA8;
-  const bgfx_memory_t* mem = bgfx_alloc(surface->pitch * surface->h);
-  memcpy(mem->data, surface->pixels, surface->pitch * surface->h);
+  bgfx_texture_format_t format = get_texture_format(surface);
+  size_t bufferSize = surface->w * surface->h * surface->format->BytesPerPixel;
+  const bgfx_memory_t* mem = bgfx_alloc(bufferSize);
+  memcpy(mem->data, surface->pixels, bufferSize);
 
   bgfx_texture_handle_t handle =
       bgfx_create_texture_2d((uint16_t)surface->w, (uint16_t)surface->h,

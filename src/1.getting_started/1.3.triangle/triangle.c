@@ -1,11 +1,17 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#include <fs_triangle.sc.glsl.bin.h>
+#include <vs_triangle.sc.glsl.bin.h>
+#elif BX_PLATFORM_OSX
 #include <fs_triangle.sc.mtl.bin.h>
+#include <vs_triangle.sc.mtl.bin.h>
+#elif BX_PLATFORM_WINDOWS
+#endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <vs_triangle.sc.mtl.bin.h>
 #include <utils.h>
 
 typedef struct PosColorVertex {
@@ -33,10 +39,18 @@ void setup_buffers_and_shaders() {
   const bgfx_memory_t* vertex_mem = bgfx_copy(s_vertices, sizeof(s_vertices));
   vbh = bgfx_create_vertex_buffer(vertex_mem, &layout, BGFX_BUFFER_NONE);
 
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+  bgfx_shader_handle_t vsh = bgfx_create_shader(
+      bgfx_make_ref(vs_triangle_glsl, sizeof(vs_triangle_glsl)));
+  bgfx_shader_handle_t fsh = bgfx_create_shader(
+      bgfx_make_ref(fs_triangle_glsl, sizeof(fs_triangle_glsl)));
+#elif BX_PLATFORM_OSX
   bgfx_shader_handle_t vsh = bgfx_create_shader(
       bgfx_make_ref(vs_triangle_mtl, sizeof(vs_triangle_mtl)));
   bgfx_shader_handle_t fsh = bgfx_create_shader(
       bgfx_make_ref(fs_triangle_mtl, sizeof(fs_triangle_mtl)));
+#elif BX_PLATFORM_WINDOWS
+#endif
 
   program = bgfx_create_program(vsh, fsh, true);
 }

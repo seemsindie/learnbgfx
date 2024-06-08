@@ -1,6 +1,6 @@
 add_executable(shaders_uniform shaders_uniform.c ${ADDITIONAL_SOURCE_FILES} vs_uniform.sc fs_uniform.sc)
 
-target_link_libraries(shaders_uniform bgfx bx bimg SDL2::SDL2-static SDL2_image)
+target_link_libraries(shaders_uniform bgfx bx bimg SDL2::SDL2-static SDL2_image cglm)
 target_include_directories(shaders_uniform PRIVATE ${CMAKE_BINARY_DIR}/include/generated/shaders)
 
 # Shader compilation (to header)

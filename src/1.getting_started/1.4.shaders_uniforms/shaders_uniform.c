@@ -1,12 +1,18 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <bgfx/c99/bgfx.h>
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#include <fs_uniform.sc.glsl.bin.h>
+#include <vs_uniform.sc.glsl.bin.h>
+#elif BX_PLATFORM_OSX
 #include <fs_uniform.sc.mtl.bin.h>
+#include <vs_uniform.sc.sc.mtl.bin.h>
+#elif BX_PLATFORM_WINDOWS
+#endif
 #include <setup_metal_layer.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <utils.h>
-#include <vs_uniform.sc.mtl.bin.h>
 
 typedef struct PosColorVertex {
   float x, y, z;
@@ -40,10 +46,18 @@ void setup_buffers_and_shaders() {
   const bgfx_memory_t* index_mem = bgfx_copy(s_indices, sizeof(s_indices));
   ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE);
 
+#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+  bgfx_shader_handle_t vsh = bgfx_create_shader(
+      bgfx_make_ref(vs_uniform_glsl, sizeof(vs_uniform_glsl)));
+  bgfx_shader_handle_t fsh = bgfx_create_shader(
+      bgfx_make_ref(fs_uniform_glsl, sizeof(fs_uniform_glsl)));
+#elif BX_PLATFORM_OSX
   bgfx_shader_handle_t vsh = bgfx_create_shader(
       bgfx_make_ref(vs_uniform_mtl, sizeof(vs_uniform_mtl)));
   bgfx_shader_handle_t fsh = bgfx_create_shader(
       bgfx_make_ref(fs_uniform_mtl, sizeof(fs_uniform_mtl)));
+#elif BX_PLATFORM_WINDOWS
+#endif
 
   program = bgfx_create_program(vsh, fsh, true);
 
@@ -92,6 +106,7 @@ int main(int argc, char* argv[]) {
   bgfx_destroy_program(program);
   bgfx_destroy_index_buffer(ibh);
   bgfx_destroy_vertex_buffer(vbh);
+  bgfx_destroy_uniform(u_color);
   bgfx_shutdown();
 
   SDL_DestroyWindow(window);

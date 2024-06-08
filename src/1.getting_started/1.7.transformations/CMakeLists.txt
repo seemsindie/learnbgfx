@@ -45,3 +45,39 @@ add_custom_command(
   COMMENT "Copying container.jpg to build directory for transformations"
   DEPENDS textures
 )
+
+add_custom_command(
+  TARGET transformations_exercise_1 POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_CURRENT_SOURCE_DIR}/awesomeface.png
+  $<TARGET_FILE_DIR:transformations_exercise_1>
+  COMMENT "Copying awesomeface.png to build directory for transformations_exercise_1"
+)
+
+# Ensure container.jpg is copied only once
+add_custom_command(
+  TARGET transformations_exercise_1 POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_CURRENT_SOURCE_DIR}/container.jpg
+  $<TARGET_FILE_DIR:transformations_exercise_1>
+  COMMENT "Copying container.jpg to build directory for transformations_exercise_1"
+  DEPENDS textures
+)
+
+add_custom_command(
+  TARGET transformations_exercise_2 POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_CURRENT_SOURCE_DIR}/awesomeface.png
+  $<TARGET_FILE_DIR:transformations_exercise_2>
+  COMMENT "Copying awesomeface.png to build directory for transformations_exercise_2"
+)
+
+# Ensure container.jpg is copied only once
+add_custom_command(
+  TARGET transformations_exercise_2 POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_CURRENT_SOURCE_DIR}/container.jpg
+  $<TARGET_FILE_DIR:transformations_exercise_2>
+  COMMENT "Copying container.jpg to build directory for transformations_exercise_2"
+  DEPENDS textures
+)
