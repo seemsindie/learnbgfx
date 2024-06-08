@@ -1,6 +1,7 @@
 # LearnOpenGL Examples with SDL and bgfx
 
-This repository contains examples from LearnOpenGL implemented using SDL and bgfx.
+This repository contains examples from LearnOpenGL implemented using SDL and bgfx. Works currently on macOS, Linux and Windows.
+Planning to add more examples from LearnOpenGL and more platforms support.
 
 
 ## Clone the repo
