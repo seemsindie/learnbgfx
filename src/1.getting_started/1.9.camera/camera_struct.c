@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
   bgfx_init_t init;
   bgfx_init_ctor(&init);
   SDL_Window* window = init_sdl_bgfx(width, height, &init, debug, reset);
-  SDL_SetWindowTitle(window, "Shaders Coordinates Systems");
+  SDL_SetWindowTitle(window, "Shaders Camera Struct");
 
   SDL_Surface* container_surface = load_image("container.jpg");
   bgfx_texture_handle_t container_texture =
@@ -239,7 +239,7 @@ int main(int argc, char* argv[]) {
     bgfx_set_view_rect(0, 0, 0, width, height);
     bgfx_touch(0);
 
-    bgfx_dbg_text_printf(0, 0, 0x4f, "Hello, Coordinates Systems!");
+    bgfx_dbg_text_printf(0, 0, 0x4f, "Hello, Camera Struct!");
 
     float greenValue = sin(SDL_GetTicks() * 0.001f);
     float color[4] = {0.0f, greenValue, 0.1f, 1.0f};

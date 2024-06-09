@@ -126,7 +126,8 @@ Shader load_shaders_bin(const char* vertex_shader_path,
 }
 
 Shader load_shader_embedded(const uint8_t* vertex_shader,
-                            const uint32_t vs_size, const uint8_t* fragment_shader,
+                            const uint32_t vs_size,
+                            const uint8_t* fragment_shader,
                             const uint32_t fs_size) {
   const bgfx_memory_t* vertex_mem = bgfx_make_ref(vertex_shader, vs_size);
   const bgfx_memory_t* fragment_mem = bgfx_make_ref(fragment_shader, fs_size);
@@ -193,7 +194,11 @@ bgfx_texture_format_t get_texture_format(SDL_Surface* surface) {
     case 3:
       return BGFX_TEXTURE_FORMAT_RGB8;
     case 4:
+#if BX_PLATFORM_OSX
+      return BGFX_TEXTURE_FORMAT_BGRA8;
+#else
       return BGFX_TEXTURE_FORMAT_RGBA8;
+#endif
     default:
       fprintf(stderr, "Unsupported pixel format\n");
       exit(1);
@@ -211,10 +216,8 @@ bgfx_texture_handle_t create_texture_from_surface(SDL_Surface* surface) {
   const bgfx_memory_t* mem = bgfx_alloc(bufferSize);
   memcpy(mem->data, surface->pixels, bufferSize);
 
-  bgfx_texture_handle_t handle =
-      bgfx_create_texture_2d((uint16_t)surface->w, (uint16_t)surface->h,
-                             false,
-                             1, format, 0, mem);
+  bgfx_texture_handle_t handle = bgfx_create_texture_2d(
+      (uint16_t)surface->w, (uint16_t)surface->h, false, 1, format, 0, mem);
 
   return handle;
 }

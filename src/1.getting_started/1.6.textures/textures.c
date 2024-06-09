@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
   SDL_Window* window = init_sdl_bgfx(width, height, &init, debug, reset);
   SDL_SetWindowTitle(window, "Shaders Textures");
 
-  SDL_Surface* container_surface = load_image("container.jpg");
+  SDL_Surface* container_surface = load_image("../../../resources/container.jpg");
   bgfx_texture_handle_t container_texture = create_texture_from_surface(container_surface);
   SDL_FreeSurface(container_surface);
 
