@@ -4,19 +4,19 @@
 #include <bgfx/c99/bgfx.h>
 #include <cglm/cglm.h>
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-#include <fs_light.sc.glsl.bin.h>
+#include <fs_diffuse_light.sc.glsl.bin.h>
 #include <fs_diffuse.sc.glsl.bin.h>
-#include <vs_light.sc.glsl.bin.h>
+#include <vs_diffuse_light.sc.glsl.bin.h>
 #include <vs_diffuse.sc.glsl.bin.h>
 #elif BX_PLATFORM_OSX
-#include <fs_light.sc.mtl.bin.h>
+#include <fs_diffuse_light.sc.mtl.bin.h>
 #include <fs_diffuse.sc.mtl.bin.h>
-#include <vs_light.sc.mtl.bin.h>
+#include <vs_diffuse_light.sc.mtl.bin.h>
 #include <vs_diffuse.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
-#include <fs_light.sc.dx11.bin.h>
+#include <fs_diffuse_light.sc.dx11.bin.h>
 #include <fs_diffuse.sc.dx11.bin.h>
-#include <vs_light.sc.dx11.bin.h>
+#include <vs_diffuse_light.sc.dx11.bin.h>
 #include <vs_diffuse.sc.dx11.bin.h>
 #endif
 #include <camera.h>
@@ -116,20 +116,20 @@ void setup_buffers_and_shaders() {
   shader_program =
       load_shader_embedded(vs_diffuse_glsl, sizeof(vs_diffuse_glsl),
                            fs_diffuse_glsl, sizeof(fs_diffuse_glsl));
-  light_program = load_shader_embedded(vs_light_glsl, sizeof(vs_light_glsl),
-                                       fs_light_glsl, sizeof(fs_light_glsl));
+  light_program = load_shader_embedded(vs_diffuse_light_glsl, sizeof(vs_diffuse_light_glsl),
+                                       fs_diffuse_light_glsl, sizeof(fs_diffuse_light_glsl));
 #elif BX_PLATFORM_OSX
   shader_program =
       load_shader_embedded(vs_diffuse_mtl, sizeof(vs_diffuse_mtl),
                            fs_diffuse_mtl, sizeof(fs_diffuse_mtl));
-  light_program = load_shader_embedded(vs_light_mtl, sizeof(vs_light_mtl),
-                                       fs_light_mtl, sizeof(fs_light_mtl));
+  light_program = load_shader_embedded(vs_diffuse_light_mtl, sizeof(vs_diffuse_light_mtl),
+                                       fs_diffuse_light_mtl, sizeof(fs_diffuse_light_mtl));
 #elif BX_PLATFORM_WINDOWS
   shader_program =
       load_shader_embedded(vs_diffuse_dx11, sizeof(vs_diffuse_dx11),
                            fs_diffuse_dx11, sizeof(fs_diffuse_dx11));
-  light_program = load_shader_embedded(vs_light_dx11, sizeof(vs_light_dx11),
-                                       fs_light_dx11, sizeof(fs_light_dx11));
+  light_program = load_shader_embedded(vs_diffuse_light_dx11, sizeof(vs_diffuse_light_dx11),
+                                       fs_diffuse_light_dx11, sizeof(fs_diffuse_light_dx11));
 #endif
 
   // Set uniforms

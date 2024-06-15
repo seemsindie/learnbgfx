@@ -4,20 +4,20 @@
 #include <bgfx/c99/bgfx.h>
 #include <cglm/cglm.h>
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-#include <fs_light.sc.glsl.bin.h>
+#include <fs_ambient_light.sc.glsl.bin.h>
 #include <fs_ambient.sc.glsl.bin.h>
-#include <vs_light.sc.glsl.bin.h>
-#include <vs_light_cube.sc.glsl.bin.h>
+#include <vs_ambient_light.sc.glsl.bin.h>
+#include <vs_ambient_light_cube.sc.glsl.bin.h>
 #elif BX_PLATFORM_OSX
-#include <fs_light.sc.mtl.bin.h>
+#include <fs_ambient_light.sc.mtl.bin.h>
 #include <fs_ambient.sc.mtl.bin.h>
-#include <vs_light.sc.mtl.bin.h>
+#include <vs_ambient_light.sc.mtl.bin.h>
 #include <vs_light_cube.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
-#include <fs_light.sc.dx11.bin.h>
+#include <fs_ambient_light.sc.dx11.bin.h>
 #include <fs_ambient.sc.dx11.bin.h>
-#include <vs_light.sc.dx11.bin.h>
-#include <vs_light_cube.sc.dx11.bin.h>
+#include <vs_ambient_light.sc.dx11.bin.h>
+#include <vs_ambient_light_cube.sc.dx11.bin.h>
 #endif
 #include <camera.h>
 #include <setup_metal_layer.h>
@@ -117,20 +117,20 @@ void setup_buffers_and_shaders() {
   shader_program =
       load_shader_embedded(vs_light_cube_glsl, sizeof(vs_light_cube_glsl),
                            fs_ambient_glsl, sizeof(fs_ambient_glsl));
-  light_program = load_shader_embedded(vs_light_glsl, sizeof(vs_light_glsl),
-                                       fs_light_glsl, sizeof(fs_light_glsl));
+  light_program = load_shader_embedded(vs_ambient_light_glsl, sizeof(vs_ambient_light_glsl),
+                                       fs_ambient_light_glsl, sizeof(fs_ambient_light_glsl));
 #elif BX_PLATFORM_OSX
   shader_program =
       load_shader_embedded(vs_light_cube_mtl, sizeof(vs_light_cube_mtl),
                            fs_ambient_mtl, sizeof(fs_ambient_mtl));
-  light_program = load_shader_embedded(vs_light_mtl, sizeof(vs_light_mtl),
-                                       fs_light_mtl, sizeof(fs_light_mtl));
+  light_program = load_shader_embedded(vs_ambient_light_mtl, sizeof(vs_ambient_light_mtl),
+                                       fs_ambient_light_mtl, sizeof(fs_ambient_light_mtl));
 #elif BX_PLATFORM_WINDOWS
   shader_program =
       load_shader_embedded(vs_light_cube_dx11, sizeof(vs_light_cube_dx11),
                            fs_ambient_dx11, sizeof(fs_ambient_dx11));
-  light_program = load_shader_embedded(vs_light_dx11, sizeof(vs_light_dx11),
-                                       fs_light_dx11, sizeof(fs_light_dx11));
+  light_program = load_shader_embedded(vs_ambient_light_dx11, sizeof(vs_ambient_light_dx11),
+                                       fs_ambient_light_dx11, sizeof(fs_ambient_light_dx11));
 #endif
 
   // Set uniforms
