@@ -40,5 +40,6 @@ void camera_process_mouse_movement(Camera *camera, float xoffset, float yoffset,
 void camera_process_mouse_scroll(Camera *camera, float yoffset);
 void update_camera_vectors(Camera *camera);  // Declaration of update_camera_vectors
 void camera_dolly_zoom(Camera* camera, float zoomAmount);
+void rotate_camera(Camera* camera, float angle, int vertical);
 
 #endif

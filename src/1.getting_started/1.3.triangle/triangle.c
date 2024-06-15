@@ -22,6 +22,9 @@ typedef struct PosColorVertex {
   uint32_t abgr;
 } PosColorVertex;
 
+// -0.5f, -0.5f, 0.0f,
+//      0.5f, -0.5f, 0.0f,
+//      0.0f,  0.5f, 0.0f
 static PosColorVertex s_vertices[3] = {{-0.5f, -0.5f, 0.0f, 0xff0000ff},
                                        {0.5f, -0.5f, 0.0f, 0xff00ffff},
                                        {0.0f, 0.5f, 0.0f, 0xffffc300}};

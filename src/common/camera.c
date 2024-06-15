@@ -98,3 +98,33 @@ void update_camera_vectors(Camera *camera) {
     glm_cross(camera->Right, camera->Front, camera->Up);
     glm_normalize(camera->Up);
 }
+
+void rotate_camera(Camera* camera, float angle, int vertical) {
+    vec3 target;
+    glm_vec3_add(camera->Position, camera->Front, target); // Target point to look at
+
+    vec3 temp;
+    glm_vec3_sub(camera->Position, target, temp);
+
+    mat4 rotation;
+    vec3 axis;
+    if (vertical) {
+        glm_vec3_copy(camera->Right, axis);
+    } else {
+        glm_vec3_copy(camera->WorldUp, axis);
+    }
+    
+    glm_rotate_make(rotation, glm_rad(angle), axis);
+
+    glm_mat4_mulv3(rotation, temp, 1.0f, temp);
+    glm_vec3_add(temp, target, camera->Position);
+
+    glm_vec3_sub(target, camera->Position, camera->Front);
+    glm_vec3_normalize(camera->Front);
+
+    glm_cross(camera->Front, camera->WorldUp, camera->Right);
+    glm_normalize(camera->Right);
+
+    glm_cross(camera->Right, camera->Front, camera->Up);
+    glm_normalize(camera->Up);
+}
