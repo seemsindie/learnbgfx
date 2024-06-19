@@ -8,7 +8,9 @@
 #include <SDL2/SDL_syswm.h>
 #include <SDL_image.h>
 #include <bgfx/c99/bgfx.h>
+#if BX_PLATFORM_OSX
 #include <setup_metal_layer.h>
+#endif
 
 typedef struct Shader {
     bgfx_shader_handle_t vertex_shader;

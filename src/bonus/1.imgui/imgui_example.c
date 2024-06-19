@@ -4,26 +4,26 @@
 #include <bgfx/c99/bgfx.h>
 #include <cglm/cglm.h>
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-#include <fs_specular.sc.glsl.bin.h>
-#include <fs_specular_light.sc.glsl.bin.h>
-#include <vs_specular.sc.glsl.bin.h>
-#include <vs_specular_light.sc.glsl.bin.h>
+#include <fs_imgui_specular.sc.glsl.bin.h>
+#include <fs_imgui_specular_light.sc.glsl.bin.h>
+#include <vs_imgui_specular.sc.glsl.bin.h>
+#include <vs_imgui_specular_light.sc.glsl.bin.h>
 #elif BX_PLATFORM_OSX
 // #include  <UIKit/UIKit.h>
-#include <fs_specular.sc.mtl.bin.h>
-#include <fs_specular_light.sc.mtl.bin.h>
-#include <vs_specular.sc.mtl.bin.h>
-#include <vs_specular_light.sc.mtl.bin.h>
+#include <fs_imgui_specular.sc.mtl.bin.h>
+#include <fs_imgui_specular_light.sc.mtl.bin.h>
+#include <vs_imgui_specular.sc.mtl.bin.h>
+#include <vs_imgui_specular_light.sc.mtl.bin.h>
 #elif BX_PLATFORM_WINDOWS
-#include <fs_specular.sc.dx11.bin.h>
-#include <fs_specular_light.sc.dx11.bin.h>
-#include <vs_specular.sc.dx11.bin.h>
-#include <vs_specular_light.sc.dx11.bin.h>
+#include <fs_imgui_specular.sc.dx11.bin.h>
+#include <fs_imgui_specular_light.sc.dx11.bin.h>
+#include <vs_imgui_specular.sc.dx11.bin.h>
+#include <vs_imgui_specular_light.sc.dx11.bin.h>
 #endif
 #include <camera.h>
 #include <imgui/imgui_impl.h>
-#include <setup_metal_layer.h>
-#include <macos_scale.h>
+// #include <setup_metal_layer.h>
+// #include <macos_scale.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <utils.h>
@@ -91,7 +91,7 @@ static PosColorVertex s_vertices[36] = {
     {-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f},
 };
 
-bgfx_vertex_layout_t layout;
+bgfx_vertex_layout_t m_layout;
 bgfx_vertex_buffer_handle_t vbh;
 Shader light_program;
 Shader shader_program;
@@ -106,37 +106,37 @@ Camera camera;
 
 // Function to setup buffers and shaders
 void setup_buffers_and_shaders() {
-  bgfx_vertex_layout_begin(&layout, bgfx_get_renderer_type());
-  bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_POSITION, 3,
+  bgfx_vertex_layout_begin(&m_layout, bgfx_get_renderer_type());
+  bgfx_vertex_layout_add(&m_layout, BGFX_ATTRIB_POSITION, 3,
                          BGFX_ATTRIB_TYPE_FLOAT, false, false);
-  bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_NORMAL, 3, BGFX_ATTRIB_TYPE_FLOAT,
+  bgfx_vertex_layout_add(&m_layout, BGFX_ATTRIB_NORMAL, 3, BGFX_ATTRIB_TYPE_FLOAT,
                          false, false);
-  bgfx_vertex_layout_end(&layout);
+  bgfx_vertex_layout_end(&m_layout);
 
   const bgfx_memory_t* vertex_mem = bgfx_copy(s_vertices, sizeof(s_vertices));
-  vbh = bgfx_create_vertex_buffer(vertex_mem, &layout, BGFX_BUFFER_NONE);
+  vbh = bgfx_create_vertex_buffer(vertex_mem, &m_layout, BGFX_BUFFER_NONE);
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
   shader_program =
-      load_shader_embedded(vs_specular_glsl, sizeof(vs_specular_glsl),
-                           fs_specular_glsl, sizeof(fs_specular_glsl));
+      load_shader_embedded(vs_imgui_specular_glsl, sizeof(vs_imgui_specular_glsl),
+                           fs_imgui_specular_glsl, sizeof(fs_imgui_specular_glsl));
   light_program = load_shader_embedded(
-      vs_specular_light_glsl, sizeof(vs_specular_light_glsl),
-      fs_specular_light_glsl, sizeof(fs_specular_light_glsl));
+      vs_imgui_specular_light_glsl, sizeof(vs_imgui_specular_light_glsl),
+      fs_imgui_specular_light_glsl, sizeof(fs_imgui_specular_light_glsl));
 #elif BX_PLATFORM_OSX
   shader_program =
-      load_shader_embedded(vs_specular_mtl, sizeof(vs_specular_mtl),
-                           fs_specular_mtl, sizeof(fs_specular_mtl));
+      load_shader_embedded(vs_imgui_specular_mtl, sizeof(vs_imgui_specular_mtl),
+                           fs_imgui_specular_mtl, sizeof(fs_imgui_specular_mtl));
   light_program = load_shader_embedded(
-      vs_specular_light_mtl, sizeof(vs_specular_light_mtl),
-      fs_specular_light_mtl, sizeof(fs_specular_light_mtl));
+      vs_imgui_specular_light_mtl, sizeof(vs_imgui_specular_light_mtl),
+      fs_imgui_specular_light_mtl, sizeof(fs_imgui_specular_light_mtl));
 #elif BX_PLATFORM_WINDOWS
   shader_program =
-      load_shader_embedded(vs_specular_dx11, sizeof(vs_specular_dx11),
-                           fs_specular_dx11, sizeof(fs_specular_dx11));
+      load_shader_embedded(vs_imgui_specular_dx11, sizeof(vs_imgui_specular_dx11),
+                           fs_imgui_specular_dx11, sizeof(fs_imgui_specular_dx11));
   light_program = load_shader_embedded(
-      vs_specular_light_dx11, sizeof(vs_specular_light_dx11),
-      fs_specular_light_dx11, sizeof(fs_specular_light_dx11));
+      vs_imgui_specular_light_dx11, sizeof(vs_imgui_specular_light_dx11),
+      fs_imgui_specular_light_dx11, sizeof(fs_imgui_specular_light_dx11));
 #endif
 
   // Set uniforms
@@ -226,7 +226,7 @@ int main(int argc, char* argv[]) {
 
   setup_buffers_and_shaders();
 
-  imgui_init(getMacOSScaleFactor());
+  imgui_init(1.0f);
 
   bool running = true;
   Uint64 NOW = SDL_GetPerformanceCounter();
@@ -238,7 +238,7 @@ int main(int argc, char* argv[]) {
   int32_t scroll = 0;
   int32_t button = 0;
   int32_t inputChar = -1;
-  float scale = getMacOSScaleFactor();
+  float scale = 1.0f;
 
   // print sdl get windows size and also get display size
   int w, h;

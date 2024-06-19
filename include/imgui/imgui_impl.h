@@ -35,11 +35,7 @@
 // bgfx_view_id_t g_view_id = 255;
 // extern bgfx_view_id_t g_view_id;
 
-Shader s_imgui;
-Shader s_imgui_image;
-bgfx_vertex_layout_t layout;
-bgfx_uniform_handle_t s_tex;
-bgfx_uniform_handle_t u_imageLodEnabled;
+
 
 void imgui_init(float);
 void imgui_shutdown();
