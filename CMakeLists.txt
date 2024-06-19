@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(learnbgfx VERSION 0.1.0 LANGUAGES C CXX)
 
+# set(CMAKE_C_STANDARD 99)
+# set(CMAKE_C_STANDARD_REQUIRED ON)
+# set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 17)
+
 include(FetchContent)
 
 set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
@@ -62,10 +67,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cglm)
 
+#Fetch cimgui
+FetchContent_Declare(
+  cimgui
+  GIT_REPOSITORY https://github.com/cimgui/cimgui.git
+  GIT_TAG        origin/master
+  SOURCE_DIR     "${FETCHCONTENT_BASE_DIR}/cimgui"
+)
+FetchContent_MakeAvailable(cimgui)
+
 include_directories(${CMAKE_SOURCE_DIR}/include/common)
 
 add_subdirectory(src)
-
 
 # Copy resources
 add_custom_target(copy_resources ALL

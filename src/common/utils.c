@@ -221,3 +221,15 @@ bgfx_texture_handle_t create_texture_from_surface(SDL_Surface* surface) {
 
   return handle;
 }
+
+// static bool is_macos(void) {
+//     #if defined(BX_PLATFORM_OSX)
+//         return false;
+//     #elif defined(__EMSCRIPTEN__)
+//         return simgui_js_is_osx();
+//     #elif defined(__APPLE__)
+//         return true;
+//     #else
+//         return false;
+//     #endif
+// }
