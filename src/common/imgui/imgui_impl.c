@@ -5,7 +5,7 @@
 
 Shader s_imgui;
 Shader s_imgui_image;
-bgfx_vertex_layout_t layout;
+bgfx_vertex_layout_t _layout;
 bgfx_uniform_handle_t s_tex;
 bgfx_uniform_handle_t u_imageLodEnabled;
 
@@ -74,14 +74,14 @@ void imgui_init(float scale)
 #endif
 
   // create vertex layout
-  bgfx_vertex_layout_begin(&layout, bgfx_get_renderer_type());
-  bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_POSITION, 2,
+  bgfx_vertex_layout_begin(&_layout, bgfx_get_renderer_type());
+  bgfx_vertex_layout_add(&_layout, BGFX_ATTRIB_POSITION, 2,
                          BGFX_ATTRIB_TYPE_FLOAT, false, false);
-  bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_TEXCOORD0, 2,
+  bgfx_vertex_layout_add(&_layout, BGFX_ATTRIB_TEXCOORD0, 2,
                          BGFX_ATTRIB_TYPE_FLOAT, false, false);
-  bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_COLOR0, 4, BGFX_ATTRIB_TYPE_UINT8,
+  bgfx_vertex_layout_add(&_layout, BGFX_ATTRIB_COLOR0, 4, BGFX_ATTRIB_TYPE_UINT8,
                          true, false);
-  bgfx_vertex_layout_end(&layout);
+  bgfx_vertex_layout_end(&_layout);
 
   // create uniform
   s_tex = bgfx_create_uniform("s_tex", BGFX_UNIFORM_TYPE_SAMPLER, 1);
@@ -239,13 +239,13 @@ void imgui_render(ImDrawData *draw_data, float scale)
     uint32_t vtx_size = (uint32_t)(cmd_list->VtxBuffer.Size);
     uint32_t idx_size = (uint32_t)(cmd_list->IdxBuffer.Size);
 
-    if (!checkAvailTransientBuffers(vtx_size, &layout, idx_size))
+    if (!checkAvailTransientBuffers(vtx_size, &_layout, idx_size))
     {
       // not enough space in transient buffer, quit drawing the rest...
       break;
     }
 
-    bgfx_alloc_transient_vertex_buffer(&tvb, vtx_size, &layout);
+    bgfx_alloc_transient_vertex_buffer(&tvb, vtx_size, &_layout);
     bgfx_alloc_transient_index_buffer(&tib, idx_size, sizeof(ImDrawIdx) == 4);
 
     ImDrawVert *verts = (ImDrawVert *)tvb.data;

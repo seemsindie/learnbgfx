@@ -7,7 +7,7 @@
 #include <fs_ambient_light.sc.glsl.bin.h>
 #include <fs_ambient.sc.glsl.bin.h>
 #include <vs_ambient_light.sc.glsl.bin.h>
-#include <vs_ambient_light_cube.sc.glsl.bin.h>
+#include <vs_light_cube.sc.glsl.bin.h>
 #elif BX_PLATFORM_OSX
 #include <fs_ambient_light.sc.mtl.bin.h>
 #include <fs_ambient.sc.mtl.bin.h>
