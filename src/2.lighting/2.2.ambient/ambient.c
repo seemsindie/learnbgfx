@@ -17,7 +17,7 @@
 #include <fs_ambient_light.sc.dx11.bin.h>
 #include <fs_ambient.sc.dx11.bin.h>
 #include <vs_ambient_light.sc.dx11.bin.h>
-#include <vs_ambient_light_cube.sc.dx11.bin.h>
+#include <vs_light_cube.sc.dx11.bin.h>
 #endif
 #include <camera.h>
 #include <setup_metal_layer.h>
@@ -29,11 +29,13 @@
   (0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | \
    BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA)
 
-typedef struct Cube {
+typedef struct Cube
+{
   vec3 position;
 } Cube;
 
-typedef struct PosColorVertex {
+typedef struct PosColorVertex
+{
   float x, y, z;
   uint32_t abgr;
   float u, v;
@@ -41,52 +43,52 @@ typedef struct PosColorVertex {
 
 static PosColorVertex s_vertices[36] = {
     // Front face
-    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 0.0f},  // red
-    {0.5f, -0.5f, -0.5f, 0xff00ffff, 1.0f, 0.0f},   // cyan
-    {0.5f, 0.5f, -0.5f, 0xff00ff00, 1.0f, 1.0f},    // green
-    {0.5f, 0.5f, -0.5f, 0xff00ff00, 1.0f, 1.0f},    // green
-    {-0.5f, 0.5f, -0.5f, 0xffffc300, 0.0f, 1.0f},   // yellow
-    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 0.0f},  // red
+    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 0.0f}, // red
+    {0.5f, -0.5f, -0.5f, 0xff00ffff, 1.0f, 0.0f},  // cyan
+    {0.5f, 0.5f, -0.5f, 0xff00ff00, 1.0f, 1.0f},   // green
+    {0.5f, 0.5f, -0.5f, 0xff00ff00, 1.0f, 1.0f},   // green
+    {-0.5f, 0.5f, -0.5f, 0xffffc300, 0.0f, 1.0f},  // yellow
+    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 0.0f}, // red
 
     // Back face
-    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f},  // blue
-    {0.5f, -0.5f, 0.5f, 0xff00ffff, 1.0f, 0.0f},   // cyan
-    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 1.0f},    // green
-    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 1.0f},    // green
-    {-0.5f, 0.5f, 0.5f, 0xffffc300, 0.0f, 1.0f},   // yellow
-    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f},  // blue
+    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f}, // blue
+    {0.5f, -0.5f, 0.5f, 0xff00ffff, 1.0f, 0.0f},  // cyan
+    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 1.0f},   // green
+    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 1.0f},   // green
+    {-0.5f, 0.5f, 0.5f, 0xffffc300, 0.0f, 1.0f},  // yellow
+    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f}, // blue
 
     // Left face
-    {-0.5f, 0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},    // magenta
-    {-0.5f, 0.5f, -0.5f, 0xff00ff00, 1.0f, 1.0f},   // green
-    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 1.0f},  // red
-    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 1.0f},  // red
-    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f},   // blue
-    {-0.5f, 0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},    // magenta
+    {-0.5f, 0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},   // magenta
+    {-0.5f, 0.5f, -0.5f, 0xff00ff00, 1.0f, 1.0f},  // green
+    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 1.0f}, // red
+    {-0.5f, -0.5f, -0.5f, 0xff0000ff, 0.0f, 1.0f}, // red
+    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f},  // blue
+    {-0.5f, 0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},   // magenta
 
     // Right face
-    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},    // green
-    {0.5f, 0.5f, -0.5f, 0xff0000ff, 1.0f, 1.0f},   // red
-    {0.5f, -0.5f, -0.5f, 0xff00ffff, 0.0f, 1.0f},  // cyan
-    {0.5f, -0.5f, -0.5f, 0xff00ffff, 0.0f, 1.0f},  // cyan
-    {0.5f, -0.5f, 0.5f, 0xffffc300, 0.0f, 0.0f},   // yellow
-    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},    // green
+    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},   // green
+    {0.5f, 0.5f, -0.5f, 0xff0000ff, 1.0f, 1.0f},  // red
+    {0.5f, -0.5f, -0.5f, 0xff00ffff, 0.0f, 1.0f}, // cyan
+    {0.5f, -0.5f, -0.5f, 0xff00ffff, 0.0f, 1.0f}, // cyan
+    {0.5f, -0.5f, 0.5f, 0xffffc300, 0.0f, 0.0f},  // yellow
+    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},   // green
 
     // Bottom face
-    {-0.5f, -0.5f, -0.5f, 0xffffc300, 0.0f, 1.0f},  // yellow
-    {0.5f, -0.5f, -0.5f, 0xff00ffff, 1.0f, 1.0f},   // cyan
-    {0.5f, -0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},    // magenta
-    {0.5f, -0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},    // magenta
-    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f},   // blue
-    {-0.5f, -0.5f, -0.5f, 0xffffc300, 0.0f, 1.0f},  // yellow
+    {-0.5f, -0.5f, -0.5f, 0xffffc300, 0.0f, 1.0f}, // yellow
+    {0.5f, -0.5f, -0.5f, 0xff00ffff, 1.0f, 1.0f},  // cyan
+    {0.5f, -0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},   // magenta
+    {0.5f, -0.5f, 0.5f, 0xffff00ff, 1.0f, 0.0f},   // magenta
+    {-0.5f, -0.5f, 0.5f, 0xffff0000, 0.0f, 0.0f},  // blue
+    {-0.5f, -0.5f, -0.5f, 0xffffc300, 0.0f, 1.0f}, // yellow
 
     // Top face
-    {-0.5f, 0.5f, -0.5f, 0xffff00ff, 0.0f, 1.0f},  // magenta
-    {0.5f, 0.5f, -0.5f, 0xff00ffff, 1.0f, 1.0f},   // cyan
-    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},    // green
-    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},    // green
-    {-0.5f, 0.5f, 0.5f, 0xffffc300, 0.0f, 0.0f},   // yellow
-    {-0.5f, 0.5f, -0.5f, 0xffff00ff, 0.0f, 1.0f}   // magenta
+    {-0.5f, 0.5f, -0.5f, 0xffff00ff, 0.0f, 1.0f}, // magenta
+    {0.5f, 0.5f, -0.5f, 0xff00ffff, 1.0f, 1.0f},  // cyan
+    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},   // green
+    {0.5f, 0.5f, 0.5f, 0xff00ff00, 1.0f, 0.0f},   // green
+    {-0.5f, 0.5f, 0.5f, 0xffffc300, 0.0f, 0.0f},  // yellow
+    {-0.5f, 0.5f, -0.5f, 0xffff00ff, 0.0f, 1.0f}  // magenta
 };
 
 bgfx_vertex_layout_t layout;
@@ -100,7 +102,8 @@ bgfx_uniform_handle_t u_lightColor;
 Camera camera;
 
 // Function to setup buffers and shaders
-void setup_buffers_and_shaders() {
+void setup_buffers_and_shaders()
+{
   bgfx_vertex_layout_begin(&layout, bgfx_get_renderer_type());
   bgfx_vertex_layout_add(&layout, BGFX_ATTRIB_POSITION, 3,
                          BGFX_ATTRIB_TYPE_FLOAT, false, false);
@@ -110,7 +113,7 @@ void setup_buffers_and_shaders() {
                          BGFX_ATTRIB_TYPE_FLOAT, false, false);
   bgfx_vertex_layout_end(&layout);
 
-  const bgfx_memory_t* vertex_mem = bgfx_copy(s_vertices, sizeof(s_vertices));
+  const bgfx_memory_t *vertex_mem = bgfx_copy(s_vertices, sizeof(s_vertices));
   vbh = bgfx_create_vertex_buffer(vertex_mem, &layout, BGFX_BUFFER_NONE);
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
@@ -139,30 +142,37 @@ void setup_buffers_and_shaders() {
   u_lightColor = bgfx_create_uniform("u_lightColor", BGFX_UNIFORM_TYPE_VEC4, 1);
 }
 
-void process_camera_movement(Camera* camera, const Uint8* key_state,
-                             float deltaTime) {
-  if (key_state[SDL_SCANCODE_W]) {
+void process_camera_movement(Camera *camera, const Uint8 *key_state,
+                             float deltaTime)
+{
+  if (key_state[SDL_SCANCODE_W])
+  {
     camera_process_keyboard(camera, FORWARD, deltaTime);
   }
-  if (key_state[SDL_SCANCODE_S]) {
+  if (key_state[SDL_SCANCODE_S])
+  {
     camera_process_keyboard(camera, BACKWARD, deltaTime);
   }
-  if (key_state[SDL_SCANCODE_A]) {
+  if (key_state[SDL_SCANCODE_A])
+  {
     camera_process_keyboard(camera, LEFT, deltaTime);
   }
-  if (key_state[SDL_SCANCODE_D]) {
+  if (key_state[SDL_SCANCODE_D])
+  {
     camera_process_keyboard(camera, RIGHT, deltaTime);
   }
 }
 
-void process_mouse_movement(Camera* camera) {
+void process_mouse_movement(Camera *camera)
+{
   int x, y;
   SDL_GetMouseState(&x, &y);
 
   static int lastX, lastY;
   static bool firstMouse = true;
 
-  if (firstMouse) {
+  if (firstMouse)
+  {
     lastX = x;
     lastY = y;
     firstMouse = false;
@@ -177,12 +187,13 @@ void process_mouse_movement(Camera* camera) {
   camera_process_mouse_movement(camera, xOffset, yOffset, 1);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
   uint32_t width = 800;
   uint32_t height = 600;
-  uint32_t debug = BGFX_DEBUG_TEXT;   // set to BGFX_DEBUG_TEXT |
-                                      // BGFX_DEBUG_WIREFRAME to see wireframe
-  uint32_t reset = BGFX_RESET_VSYNC;  // BGFX_RESET_NONE
+  uint32_t debug = BGFX_DEBUG_TEXT;  // set to BGFX_DEBUG_TEXT |
+                                     // BGFX_DEBUG_WIREFRAME to see wireframe
+  uint32_t reset = BGFX_RESET_VSYNC; // BGFX_RESET_NONE
 
   // Initialize camera
   vec3 camera_position = {0.0f, 0.0f, 5.0f};
@@ -193,20 +204,34 @@ int main(int argc, char* argv[]) {
 
   bgfx_init_t init;
   bgfx_init_ctor(&init);
-  SDL_Window* window = init_sdl_bgfx(width, height, &init, debug, reset);
+  SDL_Window *window = init_sdl_bgfx(width, height, &init, debug, reset);
   SDL_SetWindowTitle(window, "Lighting Colors");
 
-  SDL_Surface* container_surface =
+#if BX_PLATFORM_WINDOWS
+  SDL_Surface *container_surface =
+      load_image("../../../../resources/container.jpg");
+  bgfx_texture_handle_t container_texture =
+      create_texture_from_surface(container_surface);
+  SDL_FreeSurface(container_surface);
+
+  SDL_Surface *awesomeface_surface =
+      load_image("../../../../resources/awesomeface.png");
+  bgfx_texture_handle_t awesomeface_texture =
+      create_texture_from_surface(awesomeface_surface);
+  SDL_FreeSurface(awesomeface_surface);
+#else
+  SDL_Surface *container_surface =
       load_image("../../../resources/container.jpg");
   bgfx_texture_handle_t container_texture =
       create_texture_from_surface(container_surface);
   SDL_FreeSurface(container_surface);
 
-  SDL_Surface* awesomeface_surface =
+  SDL_Surface *awesomeface_surface =
       load_image("../../../resources/awesomeface.png");
   bgfx_texture_handle_t awesomeface_texture =
       create_texture_from_surface(awesomeface_surface);
   SDL_FreeSurface(awesomeface_surface);
+#endif
 
   bgfx_uniform_handle_t s_texture_1 =
       bgfx_create_uniform("s_texture_1", BGFX_UNIFORM_TYPE_SAMPLER, 1);
@@ -220,7 +245,8 @@ int main(int argc, char* argv[]) {
   Uint64 LAST = 0;
   double deltaTime = 0;
 
-  while (running) {
+  while (running)
+  {
     LAST = NOW;
     NOW = SDL_GetPerformanceCounter();
     deltaTime =
@@ -228,19 +254,22 @@ int main(int argc, char* argv[]) {
         0.001;
 
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT) {
+    while (SDL_PollEvent(&event))
+    {
+      if (event.type == SDL_QUIT)
+      {
         running = false;
       }
 
       // mouse wheel zoom
-      if (event.type == SDL_MOUSEWHEEL) {
+      if (event.type == SDL_MOUSEWHEEL)
+      {
         // camera_process_mouse_scroll(&camera, -event.wheel.y);
         camera_dolly_zoom(&camera, event.wheel.y * 0.1f);
       }
     }
 
-    const Uint8* key_state = SDL_GetKeyboardState(NULL);
+    const Uint8 *key_state = SDL_GetKeyboardState(NULL);
     process_camera_movement(&camera, key_state, (float)deltaTime);
 
     // process_mouse_movement(&camera);

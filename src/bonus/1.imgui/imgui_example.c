@@ -207,17 +207,31 @@ int main(int argc, char* argv[]) {
   SDL_SetWindowTitle(window, "Lighting imgui example");
   SDL_StartTextInput();
 
-  SDL_Surface* container_surface =
+#if BX_PLATFORM_WINDOWS
+  SDL_Surface *container_surface =
+      load_image("../../../../resources/container.jpg");
+  bgfx_texture_handle_t container_texture =
+      create_texture_from_surface(container_surface);
+  SDL_FreeSurface(container_surface);
+
+  SDL_Surface *awesomeface_surface =
+      load_image("../../../../resources/awesomeface.png");
+  bgfx_texture_handle_t awesomeface_texture =
+      create_texture_from_surface(awesomeface_surface);
+  SDL_FreeSurface(awesomeface_surface);
+#else
+  SDL_Surface *container_surface =
       load_image("../../../resources/container.jpg");
   bgfx_texture_handle_t container_texture =
       create_texture_from_surface(container_surface);
   SDL_FreeSurface(container_surface);
 
-  SDL_Surface* awesomeface_surface =
+  SDL_Surface *awesomeface_surface =
       load_image("../../../resources/awesomeface.png");
   bgfx_texture_handle_t awesomeface_texture =
       create_texture_from_surface(awesomeface_surface);
   SDL_FreeSurface(awesomeface_surface);
+#endif
 
   bgfx_uniform_handle_t s_texture_1 =
       bgfx_create_uniform("s_texture_1", BGFX_UNIFORM_TYPE_SAMPLER, 1);

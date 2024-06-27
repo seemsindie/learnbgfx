@@ -31,6 +31,8 @@ endif()
 set(CGLM_SHARED OFF)
 set(CGLM_STATIC ON)
 
+set(IMGUI_STATIC ON)
+
 # Fetch bgfx
 FetchContent_Declare(
   bgfx
