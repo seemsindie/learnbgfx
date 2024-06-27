@@ -261,9 +261,9 @@ int main(int argc, char* argv[]) {
     // uniforms
     vec3 light_pos = {1.2f, 1.0f, 2.0f};
     bgfx_set_uniform(u_lightPos, light_pos, 1);
-    bgfx_set_uniform(u_objectColor, (vec3){1.0f, 0.5f, 0.31f},
+    bgfx_set_uniform(u_objectColor, (vec4){1.0f, 0.5f, 0.31f, 1.0f},
                      1);
-    bgfx_set_uniform(u_lightColor, (vec3){1.0f, 1.0f, 1.0f}, 1);
+    bgfx_set_uniform(u_lightColor, (vec4){1.0f, 1.0f, 1.0f, 1.0f}, 1);
 
     mat4 model;
     glm_mat4_identity(model);

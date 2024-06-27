@@ -287,12 +287,14 @@ int main(int argc, char* argv[]) {
     bgfx_set_view_transform(0, view, proj);
 
     // uniforms
-    vec3 light_pos = {0.0f, 1.0f, -2.0f};
+    vec4 light_pos = {0.0f, 1.0f, -2.0f, 1.0f};
     bgfx_set_uniform(u_lightPos, light_pos, 1);
-    bgfx_set_uniform(u_objectColor, (vec3){1.0f, 0.5f, 0.31f},
+    bgfx_set_uniform(u_objectColor, (vec4){1.0f, 0.5f, 0.31f, 1.0f},
                      1);
-    bgfx_set_uniform(u_lightColor, (vec3){1.0f, 1.0f, 1.0f}, 1);
-    bgfx_set_uniform(u_viewPos, camera.Position, 1);
+    bgfx_set_uniform(u_lightColor, (vec4){1.0f, 1.0f, 1.0f, 1.0f}, 1);
+    bgfx_set_uniform(u_viewPos, (vec4){camera.Position[0], camera.Position[1],
+                                      camera.Position[2], 1.0f},
+                     1);
 
     mat4 model, normalMatrix;
     glm_mat4_identity(model);
